@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xmlns:context="http://www.springframework.org/schema/context"
+	 xmlns:tx="http://www.springframework.org/schema/tx"
+	 xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans.xsd
+	  http://www.springframework.org/schema/context
+	   http://www.springframework.org/schema/context/spring-context-4.3.xsd
+	   http://www.springframework.org/schema/mvc
+	    http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+      http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-3.1.xsd">
+	
+	
+	<context:annotation-config />
+	<!-- DispatcherServlet Context: defines this servlet's request-processing 
+		infrastructure -->
+
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<mvc:annotation-driven></mvc:annotation-driven>
+
+	<!-- Handles HTTP GET requests for /resources/** by efficiently serving 
+		up static resources in the ${webappRoot}/resources directory -->
+	<mvc:resources mapping="/resources/**" location="/resources/" />
+	
+	 <context:component-scan base-package="com.lasantha"></context:component-scan>
+	
+   <bean class = "org.springframework.web.servlet.view.InternalResourceViewResolver">
+  
+	   <property name="prefix"><value>/WEB-INF/views/</value></property>
+	   <property name="suffix"><value>.jsp</value></property>
+   </bean>
+  
+  <bean id="dataSource" class = "org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+  	<property name="driverClassName"><value>com.mysql.jdbc.Driver</value></property>
+  	<property name="url"><value>jdbc:mysql://localhost:3306/spring_test1</value></property>
+  	<property name="username"><value>root</value></property>
+  	<property name="password"><value>lf7g3QtcIJ2mCmqR</value></property>
+  </bean>
+  
+  <!-- Hibernate 5 SessionFactory Bean definition -->
+  
+  <bean id="hibernate5AnnotatedSessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+	  <property name="dataSource" ref="dataSource"></property>
+	  <property name="annotatedClasses">
+		  <list>
+		  	<value>com.lasantha.entities.Person</value>
+		  </list>
+	  </property>
+  	  <property name="hibernateProperties">
+  	  	<props>
+  	  		<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+  	  		<prop key="hibernate.show_sql">true</prop>
+ 
+  	  	</props>
+  	  </property>
+  </bean>
+  
+  <bean id="PersonDao" class="com.lasantha.dao.PersonDaoImpl">
+  		<property name="sessionFactory" ref= "hibernate5AnnotatedSessionFactory"></property>
+  </bean>
+  
+  <bean id="personService" class="com.lasantha.service.PersonServiceImpl">
+  	<property name="personDAO" ref="PersonDao"></property>
+  </bean>
+  
+  <tx:annotation-driven transaction-manager="transactionManager"></tx:annotation-driven>
+  
+  <bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+  	<property name="sessionFactory" ref="hibernate5AnnotatedSessionFactory"></property>
+  </bean>
+</beans>
