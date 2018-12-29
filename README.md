@@ -42,7 +42,7 @@
     8. Deploy the project (war file) using Run configuration <strong>goal</strong> with 
        clean install tomcat7:deploy
        
-    9.Go to http://localhost:8080/manager/html and manager-gui credentials
+    9.Go to http://localhost:8080/manager/html with manager-gui credentials
 
 
 </ul>   
